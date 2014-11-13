@@ -1,84 +1,86 @@
 function phoneStructures()
 {
-	var num0 = [
-		[7, 7, 7],
-		[7, -1, 7],
-		[7, -1, 7],
-		[7, -1, 7],
-		[7, 7, 7]
+	var num = [];
+
+	num[0] = [
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor],
+		[Phone.defaultColor, -1, Phone.defaultColor],
+		[Phone.defaultColor, -1, Phone.defaultColor],
+		[Phone.defaultColor, -1, Phone.defaultColor],
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor]
 	];
-	var num1 = [
-		[-1, -1, 7],
-		[-1, -1, 7],
-		[-1, -1, 7],
-		[-1, -1, 7],
-		[-1, -1, 7]
+	num[1] = [
+		[-1, -1, Phone.defaultColor],
+		[-1, -1, Phone.defaultColor],
+		[-1, -1, Phone.defaultColor],
+		[-1, -1, Phone.defaultColor],
+		[-1, -1, Phone.defaultColor]
 	];
-	var num2 = [
-		[7, 7, 7],
-		[-1, -1, 7],
-		[7, 7, 7],
-		[7, -1, -1],
-		[7, 7, 7]
+	num[2] = [
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor],
+		[-1, -1, Phone.defaultColor],
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor],
+		[Phone.defaultColor, -1, -1],
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor]
 	];
-	var num3 = [
-		[7, 7, 7],
-		[-1, -1, 7],
-		[7, 7, 7],
-		[-1, -1, 7],
-		[7, 7, 7]
+	num[3] = [
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor],
+		[-1, -1, Phone.defaultColor],
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor],
+		[-1, -1, Phone.defaultColor],
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor]
 	];
-	var num4 = [
-		[7, -1, 7],
-		[7, -1, 7],
-		[7, 7, 7],
-		[-1, -1, 7],
-		[-1, -1, 7]
+	num[4] = [
+		[Phone.defaultColor, -1, Phone.defaultColor],
+		[Phone.defaultColor, -1, Phone.defaultColor],
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor],
+		[-1, -1, Phone.defaultColor],
+		[-1, -1, Phone.defaultColor]
 	];
-	var num5 = [
-		[7, 7, 7],
-		[7, -1, -1],
-		[7, 7, 7],
-		[-1, -1, 7],
-		[7, 7, 7]
+	num[5] = [
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor],
+		[Phone.defaultColor, -1, -1],
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor],
+		[-1, -1, Phone.defaultColor],
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor]
 	];
-	var num6 = [
-		[7, 7, 7],
-		[7, -1, -1],
-		[7, 7, 7],
-		[7, -1, 7],
-		[7, 7, 7]
+	num[6] = [
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor],
+		[Phone.defaultColor, -1, -1],
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor],
+		[Phone.defaultColor, -1, Phone.defaultColor],
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor]
 	];
-	var num7 = [
-		[7, 7, 7],
-		[-1, -1, 7],
-		[-1, -1, 7],
-		[-1, -1, 7],
-		[-1, -1, 7]
+	num[7] = [
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor],
+		[-1, -1, Phone.defaultColor],
+		[-1, -1, Phone.defaultColor],
+		[-1, -1, Phone.defaultColor],
+		[-1, -1, Phone.defaultColor]
 	];
-	var num8 = [
-		[7, 7, 7],
-		[7, -1, 7],
-		[7, 7, 7],
-		[7, -1, 7],
-		[7, 7, 7]
+	num[8] = [
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor],
+		[Phone.defaultColor, -1, Phone.defaultColor],
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor],
+		[Phone.defaultColor, -1, Phone.defaultColor],
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor]
 	];
-	var num9 = [
-		[7, 7, 7],
-		[7, -1, 7],
-		[7, 7, 7],
-		[-1, -1, 7],
-		[7, 7, 7]
+	num[9] = [
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor],
+		[Phone.defaultColor, -1, Phone.defaultColor],
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor],
+		[-1, -1, Phone.defaultColor],
+		[Phone.defaultColor, Phone.defaultColor, Phone.defaultColor]
 	];
 
-	this.number0 = Phone.Renderer.registerStructure(num0);
-	this.number1 = Phone.Renderer.registerStructure(num1);
-	this.number2 = Phone.Renderer.registerStructure(num2);
-	this.number3 = Phone.Renderer.registerStructure(num3);
-	this.number4 = Phone.Renderer.registerStructure(num4);
-	this.number5 = Phone.Renderer.registerStructure(num5);
-	this.number6 = Phone.Renderer.registerStructure(num6);
-	this.number7 = Phone.Renderer.registerStructure(num7);
-	this.number8 = Phone.Renderer.registerStructure(num8);
-	this.number9 = Phone.Renderer.registerStructure(num9);
+	this.number0 = Phone.Renderer.registerStructure(num[0]);
+	this.number1 = Phone.Renderer.registerStructure(num[1]);
+	this.number2 = Phone.Renderer.registerStructure(num[2]);
+	this.number3 = Phone.Renderer.registerStructure(num[3]);
+	this.number4 = Phone.Renderer.registerStructure(num[4]);
+	this.number5 = Phone.Renderer.registerStructure(num[5]);
+	this.number6 = Phone.Renderer.registerStructure(num[6]);
+	this.number7 = Phone.Renderer.registerStructure(num[7]);
+	this.number8 = Phone.Renderer.registerStructure(num[8]);
+	this.number9 = Phone.Renderer.registerStructure(num[9]);
 }
