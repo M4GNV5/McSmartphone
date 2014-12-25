@@ -20,10 +20,10 @@ for %%f in (".\..\src\Apps\*.js") do (
 	)
 )	
 
-xcopy "C:\Users\Agent J\AppData\Roaming\.minecraft\saves\pvm" ".\world" /Y /E
+xcopy "%appdata%\.minecraft\saves\pvm" ".\world" /Y /E
 echo.
 Cmd.exe -s mcphone.js -w ./world -x 1 -y 4 -z 16
 echo.
 pause
 echo.
-xcopy ".\world" "C:\Users\Agent J\AppData\Roaming\.minecraft\saves\pvm2" /Y /E
+xcopy ".\world" "%appdata%\.minecraft\saves\pvm2" /Y /E
