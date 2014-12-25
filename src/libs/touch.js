@@ -1,7 +1,5 @@
-function phoneTouch()
+function phoneTouch(options)
 {
-	this.listener = {};
-
 	this.addLocationListener = function(x, y, radius, callback)
 	{
 		radius = radius || 1;
@@ -16,9 +14,9 @@ function phoneTouch()
 
 		var selector = new Selector('a', attributes);
 
-		this.addListener(selector, callback);
+		return this.addListener(selector, callback);
 	}
-	this.addRegionListener = function(x, y, sizeX, sizeY, callback)
+	this.addRegionListener = function(x, y, sizeX, sizeY, callback, height)
 	{
 		var pos = Phone.Screen.getPosition(x, y);
 
@@ -27,24 +25,32 @@ function phoneTouch()
 		attributes.y = pos.y;
 		attributes.z = pos.z;
 		attributes.dx = sizeX - 1;
-		attributes.dy = 3;
+		attributes.dy = height || 3;
 		attributes.dz = sizeY - 1;
 
 		var selector = new Selector('a', attributes);
 
-		this.addListener(selector, callback);
+		return this.addListener(selector, callback);
 	}
-	this.addRelativeListener = function(relativeSelector, radius, callback)
+	this.addRelativeListener = function(relativeSelector, radius, callback, distanceY)
 	{
-		var name = Naming.next("touch");
+		var pos1 = new Phone.Screen.position.clone();
+		var pos2 = Phone.Screen.getPosition(Phone.Screen.size.x, Phone.Screen.size.y);
+		pos1.y--;
+		pos2.y--;
+		command("fill "+pos1+" "+pos2+" "+Phone.blockType+" 0");
 
+		var valueY = Phone.Screen.getPosition(0, 0).y;
+		distanceY = distanceY || 2;
+
+		var name = Naming.next("touch");
 		var score = new Score(name, "trigger");
 
 		score.enableTrigger(Selector.allPlayer());
 
 		var timerFunc = function()
 		{
-			command("execute "+relativeSelector+" ~ ~ ~ execute @a[r="+radius+"] ~ ~ ~ detect ~ ~-2 ~ "+Phone.blockType+" 0 trigger "+name+" add 1");
+			command("execute "+relativeSelector+" ~ ~ ~ execute @a[y="+valueY+",dy="+distanceY+",r="+radius+"] ~ ~ ~ detect ~ ~-2 ~ "+Phone.blockType+" 0 trigger "+name+" add 1");
 			testfor(score.getSelector(1), function()
 			{
 				callback(new Player(score.getSelector(1)));
@@ -53,10 +59,9 @@ function phoneTouch()
 			});
 		};
 
-		var timer = new Timer(timerFunc, {useScoreboard: true, time: 1, hardTickLength: 1});
-		timer.start();
+		var timer = new Phone.Timer(timerFunc);
 
-		this.listener[callback] = timer;
+		return timer;
 	}
 	this.addListener = function(selector, callback)
 	{
@@ -69,22 +74,8 @@ function phoneTouch()
 			callback(new Player(selector));
 		}
 
-		var timer = new Timer(timerFunc, {useScoreboard: true, time: 1, hardTickLength: 1});
-		timer.start();
+		var timer = new Phone.Timer(timerFunc);
 
-		this.listener[callback] = timer;
-	}
-
-	this.removeListener = function(callback)
-	{
-		if(typeof this.listener[callback] == 'undefined')
-			throw "Cannot remove touch listener for unregistered function '"+callback+"'";
-
-		this.listener[callback].stop();
-	}
-	this.removeAllListener = function()
-	{
-		for(var callback in this.listener)
-			this.removeListener(callback);
+		return timer;
 	}
 }

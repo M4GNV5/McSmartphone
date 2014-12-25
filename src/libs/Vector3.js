@@ -9,4 +9,8 @@ function phoneVector3(x, y, z)
 		splitter = splitter || ' ';
 		return this.x+splitter+this.y+splitter+this.z;
 	}
+	this.clone = function()
+	{
+		return new phoneVector3(this.x, this.y, this.z);
+	}
 }

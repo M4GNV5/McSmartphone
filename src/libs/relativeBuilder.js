@@ -1,6 +1,6 @@
-function phoneRelative(pos)
+function phoneRelative(pos, name)
 {
-	this.name = Naming.next("relative");
+	this.name = name || Naming.next("relative");
 
 	pos = pos || new Phone.Vector3();
 	pos.x = pos.x || '~';

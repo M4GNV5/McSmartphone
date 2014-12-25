@@ -2,8 +2,10 @@
 {
 	this.structures = [];
 
-	this.prerenderPos = [];
-	this.nextPrerenderPos = {};
+	this.preRenderPos = [];
+	this.nextpreRenderPos = {};
+
+	this.delayRenderTime = true;
 
 	this.registerStructure = function(structure)
 	{
@@ -14,12 +16,26 @@
 	}
 	this.preRender = function(id, delayRenderTime)
 	{
-		if(typeof this.prerenderPos[id] != 'undefined')
+		if(typeof this.preRenderPos[id] != 'undefined')
 			return;
+
+		var structure = this.structures[id];
+
+		var renderLength = this.getPreRenderTime(id);
+
+		if(delayRenderTime !== false && this.delayRenderTime !== false)
+			delay(renderLength);
+
+		var pos = this.nextpreRenderPos;
+		this.preRenderPos[id] = new Phone.Vector3(pos.x, pos.y, pos.z);
+		this.preRenderPos[id].xLength = structure.length;
+		this.preRenderPos[id].zLength = structure[0].length;
+
+		this.nextpreRenderPos.x += structure.length+1;
 
 		callOnce(function()
 		{
-			var pos = Phone.Renderer.prerenderPos[id];
+			var pos = Phone.Renderer.preRenderPos[id];
 			var structure = Phone.Renderer.structures[id];
 
 			var rBuilder = new Phone.Relative(pos);
@@ -37,6 +53,23 @@
 			rBuilder.dispose();
 		});
 
+		return renderLength;
+	}
+	this.preRenderMultiple = function(ids, delayRenderTime)
+	{
+		var maxRenderLength = 0;
+		for(var i = 0; i < ids.length; i++)
+		{
+			var renderLength = this.preRender(ids[i]);
+			if(renderLength > maxRenderLength)
+				maxRenderLength = renderLength;
+		}
+
+		if(delayRenderTime !== false && this.delayRenderTime !== false)
+			delay(maxRenderLength - ids.length);
+	}
+	this.getPreRenderTime = function(id)
+	{
 		var structure = this.structures[id];
 
 		var renderLength = 3;
@@ -51,41 +84,23 @@
 			}
 		}
 
-		if(delayRenderTime !== false)
-			delay(renderLength);
-
-		var pos = this.nextPrerenderPos;
-		this.prerenderPos[id] = new Phone.Vector3(pos.x, pos.y, pos.z);
-		this.prerenderPos[id].xLength = structure.length;
-		this.prerenderPos[id].zLength = structure[0].length;
-
-		this.nextPrerenderPos.x += structure.length+1;
-
 		return renderLength;
 	}
-	this.preRenderMultiple = function(ids)
+	this.getMaxPreRenderTime = function(ids)
 	{
-		var maxRenderLength = 0;
+		var maxTime = 0;
 		for(var i = 0; i < ids.length; i++)
 		{
-			var renderLength = this.preRender(ids[i]);
-			if(renderLength > maxRenderLength)
-				maxRenderLength = renderLength;
-		}
+			var time = this.getPreRenderTime(ids[i]);
 
-		delay(maxRenderLength - ids.length);
+			if(time > maxTime)
+				maxTime = time;
+		}
+		return maxTime;
 	}
 
-	this.getPreRenderPos = function(id)
+	this.sortVector3 = function(edge1, edge2)
 	{
-		if(typeof this.structures[id] == 'undefined')
-			throw "Invalid Structure ID: "+id;
-
-		var edge1 = this.prerenderPos[id];
-		var edge2 = new Phone.Vector3(edge1.x, edge1.y, edge1.z);
-		edge2.x += edge1.zLength - 1;
-		edge2.z += edge1.xLength - 1;
-
 		var final1 = new Phone.Vector3(
 			(edge1.x < edge2.x) ? edge1.x : edge2.x,
 			(edge1.y < edge2.y) ? edge1.y : edge2.y,
@@ -100,7 +115,22 @@
 		return [final1, final2];
 	}
 
-	this.setColor = function(id, color, oldColor)
+	this.getpreRenderPos = function(id)
+	{
+		if(typeof this.structures[id] == 'undefined')
+			throw "Invalid Structure ID: "+id;
+
+		var edge1 = this.preRenderPos[id];
+		var edge2 = new Phone.Vector3(edge1.x, edge1.y, edge1.z);
+		edge2.x += edge1.zLength - 1;
+		edge2.z += edge1.xLength - 1;
+
+		sorted = this.sortVector3(edge1, edge2);
+
+		return sorted;
+	}
+
+	this.setColor = function(id, color, oldColor, placeRepeater)
 	{
 		if(typeof this.structures[id] == 'undefined')
 			throw "Invalid Structure ID: "+id;
@@ -108,24 +138,48 @@
 		color = color || Phone.defaultColor;
 		oldColor = oldColor || '';
 
-		var pos = this.getPreRenderPos(id);
+		var pos = this.getpreRenderPos(id);
 
-		command("fill "+pos[0]+" "+pos[1]+" "+Phone.blockType+" "+color+" replace "+Phone.blockType+" "+oldColor);
+		command("fill "+pos[0]+" "+pos[1]+" "+Phone.blockType+" "+color+" replace "+Phone.blockType+" "+oldColor, placeRepeater);
 	}
 
-	this.renderTo = function(id, pos, color)
+	this.renderTo = function(id, x, y, options)
 	{
+		options = options || {};
+
 		if(typeof this.structures[id] == 'undefined')
 			throw "Invalid Structure ID: "+id;
 
-		if(typeof this.prerenderPos[id] == 'undefined')
+		if(typeof this.preRenderPos[id] == 'undefined')
 			Phone.Renderer.preRender(id);
 
-		if(typeof color != 'undefined')
-			this.setColor(id, color);
+		if(typeof options.color != 'undefined'  && options.color !== false)
+			this.setColor(id, options.color, options.placeRepeater);
 
-		var prepos = this.getPreRenderPos(id);
+		var prepos = this.getpreRenderPos(id);
 
-		command("clone "+prepos[0]+" "+prepos[1]+" "+pos+" masked replace");
+		var pos = Phone.Screen.getPosition(x, y);
+
+		command("clone "+prepos[0]+" "+prepos[1]+" "+pos+" masked replace", options.placeRepeater);
+	}
+	this.renderAs = function(id, selector, options)
+	{
+		options = options || {};
+
+		if(typeof this.structures[id] == 'undefined')
+			throw "Invalid Structure ID: "+id;
+
+		if(typeof selector == 'undefined')
+			throw "Cannot renderAs without a selector!";
+
+		if(typeof this.preRenderPos[id] == 'undefined')
+			Phone.Renderer.preRender(id);
+
+		if(typeof options.color != 'undefined')
+			this.setColor(id, options.color, options.placeRepeater);
+
+		var prepos = this.getpreRenderPos(id);
+
+		command("execute "+selector+" ~ ~ ~ clone "+prepos[0]+" "+prepos[1]+" ~ ~ ~ masked replace", options.placeRepeater);
 	}
 }

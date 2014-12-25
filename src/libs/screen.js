@@ -10,6 +10,11 @@ function phoneScreen()
 	this.size.x = 9;
 	this.size.y = 16;
 
+	this.getSize = function()
+	{
+		return new Phone.Vector2(this.size.x, this.size.y);
+	}
+
 	this.getPosition = function(x, y)
 	{
 		if(x > this.size.x || x < 0 || y > this.size.y || y < 0)
